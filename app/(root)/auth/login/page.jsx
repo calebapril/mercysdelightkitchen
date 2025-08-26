@@ -20,6 +20,7 @@ import z from "zod";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa6";
 import Link from "next/link";
+import { WEBSITE_REGISTER } from "@/routes/WebsiteRoute";
 function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [isTypePassword, setIsTypePassword] = useState(true);
@@ -145,7 +146,7 @@ function LoginPage() {
               <div className="text-center">
                 <div className="flex justify-center items-center gap-1">
                   <p>Don't have account?</p>
-                  <Link href="" className="text-primary underline">
+                  <Link href={WEBSITE_REGISTER} className="text-primary underline">
                     Create account!
                   </Link>
                 </div>
