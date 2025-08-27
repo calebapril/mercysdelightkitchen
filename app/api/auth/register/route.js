@@ -7,7 +7,7 @@ import UserModel from "@/models/User.model";
 import { SignJWT } from "jose";
 
 export async function POST(request) {
-  // try {
+  try {
     await connectDB();
     //validation schema
     const validationSchema = zSchema.pick({
@@ -46,17 +46,17 @@ export async function POST(request) {
     await NewRegistration.save();
 
     const secret = new TextEncoder().encode(process.env.SECRET_KEY);
-    const token = await new SignJWT({ userId: NewRegistration._id })
+    const token = await new SignJWT({ userId: NewRegistration._id.toString() })
       .setIssuedAt()
       .setExpirationTime("1h")
       .setProtectedHeader({ alg: "HS256" })
       .sign(secret);
 
 
-      await sendMail(' Email Verification from Developer Caleb', email, emailVerificationLink(`${process.env.NEXT_PUBLIC_BASE_URL}/verify-email/${token}`))
+      await sendMail(' Email Verification from Developer Caleb', email, emailVerificationLink(`${process.env.NEXT_PUBLIC_BASE_URL}/auth/verify-email/${token}`))
 
       return response(true, 200, "Registration success, Please verify your email address.")
-  // } catch (error) {
-  //   catchError(error)
-  // }
+  } catch (error) {
+    catchError(error)
+  }
 }

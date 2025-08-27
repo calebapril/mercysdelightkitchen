@@ -47,8 +47,8 @@ export const emailVerificationLink = (link) => {
     }
 
     .head-icon {
-      width: 150px;
-      height: 150px;
+      width: 120px;
+      height: 120px;
     }
 
     h3.email--subject {
@@ -161,8 +161,8 @@ export const emailVerificationLink = (link) => {
         padding: 12px 0;
       }
       .head-icon {
-        width: 120px;
-        height: 120px;
+        width: 100px;
+        height: 100px;
       }
     }
   </style>
@@ -172,7 +172,11 @@ export const emailVerificationLink = (link) => {
   <div class='wrapper'>
     <div class='email-container'>
       <div class='email--head center'>
-        <img src='https://res.cloudinary.com/dtvvh0xts/image/upload/Logo_krtasl.png' class='head-icon' alt="mercysdelightkitchen_Logo"/>
+        <img src="https://res.cloudinary.com/dtvvh0xts/image/upload/Logo_krtasl.png" 
+        class="head-icon" 
+        alt="mercysdelightkitchen_Logo" 
+        oncontextmenu="return false;" 
+        style="pointer-events:none;" />
         <h3 class='email--subject'>Email Verification</h3>
       </div>
       <div class='email--body'>

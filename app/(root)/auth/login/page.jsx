@@ -21,9 +21,14 @@ import { FaRegEyeSlash } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa6";
 import Link from "next/link";
 import { WEBSITE_REGISTER } from "@/routes/WebsiteRoute";
+import axios from "axios";
+import { showToast } from "@/lib/showToast";
+import OTPVerification from "@/components/Application/OTPVerification";
 function LoginPage() {
   const [loading, setLoading] = useState(false);
+  const [otpVerificationLoading, setOtpVerificationLoading] = useState(false);
   const [isTypePassword, setIsTypePassword] = useState(true);
+  const [otpEmail, setOtpEmail] = useState()
   const formSchema = zSchema
     .pick({
       email: true,
@@ -41,15 +46,51 @@ function LoginPage() {
   });
 
   const handleLoginSubmit = async (values) => {
-    console.log(values);
+        try {
+      setLoading(true)
+      const {data: registerResponse} = await axios.post('/api/auth/login', values)
+      if(!registerResponse.success){
+        throw new Error(registerResponse.message)
+      }
+
+      setOtpEmail(values.email)
+      form.reset()
+      showToast('success', registerResponse.message)
+    } catch (error) {
+      showToast('error', error.message)
+    }finally{
+      setLoading(false)
+    }
   };
+
+  //otp verification
+  const handleOtpVerification = async (values)=>{
+            try {
+      setOtpVerificationLoading(true)
+      const {data: registerResponse} = await axios.post('/api/auth/verify-otp', values)
+      if(!registerResponse.success){
+        throw new Error(registerResponse.message)
+      }
+
+      setOtpEmail('')
+      showToast('success', registerResponse.message)
+    } catch (error) {
+      showToast('error', error.message)
+    }finally{
+      setOtpVerificationLoading(false)
+    }
+  }
   return (
     <Card>
       <CardContent className="w-[390px]">
         <div className="flex justify-center">
           <Image src="/Logo.PNG" height={100} width={100} alt="logo" />
         </div>
-        <div className="text-center">
+
+        {!otpEmail
+        ?
+        <>
+                <div className="text-center">
           <h1 className="text-[20px] text-[rgb(51,51,51)]  font-bold">Login Into Account</h1>
           <p className="text-[rgb(51,51,51)]">If you are visiting us for the first time, please sign up below. Existing customers, please login.</p>
         </div>
@@ -159,6 +200,11 @@ function LoginPage() {
             </form>
           </Form>
         </div>
+        </>
+        :
+        <OTPVerification email={otpEmail} onSubmit={handleOtpVerification} loading={otpVerificationLoading}/>
+        }
+
       </CardContent>
     </Card>
   );
