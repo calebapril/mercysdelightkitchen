@@ -1,7 +1,6 @@
 "use client";
 import { Card, CardContent } from "@/components/ui/card";
 import React, { useState } from "react";
-//import Logo from "@/public/Logo.PNG";
 import Image from "next/image";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { zSchema } from "@/lib/zodSchema";
@@ -20,11 +19,14 @@ import z from "zod";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa6";
 import Link from "next/link";
-import { WEBSITE_REGISTER } from "@/routes/WebsiteRoute";
+import { WEBSITE_REGISTER, WEBSITE_RESETPASSWORD } from "@/routes/WebsiteRoute";
 import axios from "axios";
 import { showToast } from "@/lib/showToast";
 import OTPVerification from "@/components/Application/OTPVerification";
+import { useDispatch } from "react-redux";
+import { login } from "@/store/reducer/authReducer";
 function LoginPage() {
+  const dispatch = useDispatch()
   const [loading, setLoading] = useState(false);
   const [otpVerificationLoading, setOtpVerificationLoading] = useState(false);
   const [isTypePassword, setIsTypePassword] = useState(true);
@@ -48,14 +50,14 @@ function LoginPage() {
   const handleLoginSubmit = async (values) => {
         try {
       setLoading(true)
-      const {data: registerResponse} = await axios.post('/api/auth/login', values)
-      if(!registerResponse.success){
-        throw new Error(registerResponse.message)
+      const {data: loginResponse} = await axios.post('/api/auth/login', values)
+      if(!loginResponse.success){
+        throw new Error(loginResponse.message)
       }
 
       setOtpEmail(values.email)
       form.reset()
-      showToast('success', registerResponse.message)
+      showToast('success', loginResponse.message)
     } catch (error) {
       showToast('error', error.message)
     }finally{
@@ -67,13 +69,16 @@ function LoginPage() {
   const handleOtpVerification = async (values)=>{
             try {
       setOtpVerificationLoading(true)
-      const {data: registerResponse} = await axios.post('/api/auth/verify-otp', values)
-      if(!registerResponse.success){
-        throw new Error(registerResponse.message)
+      const {data: otpResponse} = await axios.post('/api/auth/verify-otp', values)
+      if(!otpResponse.success){
+        throw new Error(otpResponse.message)
       }
 
       setOtpEmail('')
-      showToast('success', registerResponse.message)
+      showToast('success', otpResponse.message)
+
+      dispatch(login(otpResponse.data))
+      
     } catch (error) {
       showToast('error', error.message)
     }finally{
@@ -81,8 +86,8 @@ function LoginPage() {
     }
   }
   return (
-    <Card>
-      <CardContent className="w-[390px]">
+    <Card className="w-[400px]">
+      <CardContent>
         <div className="flex justify-center">
           <Image src="/Logo.PNG" height={100} width={100} alt="logo" />
         </div>
@@ -192,7 +197,7 @@ function LoginPage() {
                   </Link>
                 </div>
                 <div className="mt-3">
-                  <Link href="" className="text-primary underline">
+                  <Link href={WEBSITE_RESETPASSWORD} className="text-primary underline">
                     Forget password?
                   </Link>
                 </div>
