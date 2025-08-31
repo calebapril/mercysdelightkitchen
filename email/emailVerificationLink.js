@@ -204,7 +204,7 @@ export const emailVerificationLink = (link) => {
 
         <div class='email-footer'>
           <div>Thank you,</div>
-          <div><a href="https://calebdesigns.vercel.app/" target="_blank">Developer Caleb</a></div>
+          <div><a href="https://calebdesigns.vercel.app/" target="_blank">Mercy’s Delight Kitchen</a></div>
         </div>
       </div>
     </div>

@@ -53,7 +53,7 @@ export async function POST(request) {
       .sign(secret);
 
 
-      await sendMail(' Email Verification from Developer Caleb', email, emailVerificationLink(`${process.env.NEXT_PUBLIC_BASE_URL}/auth/verify-email/${token}`))
+      await sendMail(' Email Verification from Mercy’s Delight Kitchen', email, emailVerificationLink(`${process.env.NEXT_PUBLIC_BASE_URL}/auth/verify-email/${token}`))
 
       return response(true, 200, "Registration success, Please verify your email address.")
   } catch (error) {

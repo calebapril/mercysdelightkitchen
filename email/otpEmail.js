@@ -92,7 +92,7 @@ export const otpEmail = (otp) => {
               <p style="margin:0;">Thank you,</p>
               <p style="margin:5px 0 0;">
                 <a href="https://calebdesigns.vercel.app/" target="_blank" style="color:#7747FF; text-decoration:none; font-weight:600;">
-                  Developer Caleb
+                  Mercy’s Delight Kitchen
                 </a>
               </p>
             </td>
