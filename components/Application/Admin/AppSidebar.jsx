@@ -1,32 +1,79 @@
+'use client'
 import {
   Sidebar,
   SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+  useSidebar,
 } from "@/components/ui/sidebar"
 import Image from "next/image"
-// import logoBlack from '@/public/mercys_delight_logo'
-// import logoWhite from '@/public/mercys_delight_logo'
+import logoBlack from '@/public/mercys_delight_logo.png'
+import logoWhite from '@/public/mercys_delight_logo.png'
 import { Button } from "@/components/ui/button"
 import { LuChevronRight } from "react-icons/lu";
 import { IoMdClose } from "react-icons/io";
+import { adminAppSidebarMenu } from "@/lib/adminSidebarMenu"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import Link from "next/link"
 const AppSidebar = () => {
+  const {toggleSidebar} = useSidebar()
   return (
-    <Sidebar>
-      <SidebarHeader>
-        <div>
-          <Image src="/mercys_delight_logo" height={50} width={50} className="block dark:hidden" alt="logo dark"/>
-          <Image src="/mercy's_delight_logo" height={50} width={50} className="hidden dark:block" alt="logo white"/>
-          <Button type="button" size="icon" className="md:hidden">
+    <Sidebar className="z-50">
+      <SidebarHeader className="border-b h-16 p-0">
+        <div className="flex justify-between items-center px-4">
+          <Image src={logoBlack} height={40} width={80} className="block dark:hidden" alt="logo dark"/>
+          <Image src={logoWhite} height={40} width={80} className="hidden dark:block" alt="logo white"/>
+          <Button onClick={toggleSidebar} type="button" size="icon" className="md:hidden">
             <IoMdClose/>
           </Button>
         </div>
       </SidebarHeader>
+
+      <SidebarContent className="p-3">
+        <SidebarMenu>
+          {adminAppSidebarMenu.map((menu, index) =>(
+            <Collapsible key={index} className="group/collapsible">
+              <SidebarMenuItem>
+                <CollapsibleTrigger asChild>
+                  <SidebarMenuButton asChild className="font-semibold px-2 py-5">
+                    <Link href={menu?.url}>
+                      <menu.icon/>
+                      {menu.title}
+
+                      {/* Arrow-icon right for sidebar */}
+                      {menu.submenu && menu.submenu.length > 0 && <LuChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90"/>}
+                    </Link>
+                  </SidebarMenuButton>
+                </CollapsibleTrigger>
+
+                {menu.submenu && menu.submenu.length > 0 
+                  &&
+                  <CollapsibleContent>
+                    <SidebarMenuSub>
+                      {menu.submenu.map((submenuItem, subMenuIndex) =>(
+                        <SidebarMenuSubItem key={subMenuIndex}>
+                          <SidebarMenuSubButton asChild className="px-2 py-5">
+                            <Link href={submenuItem.url}>
+                              {submenuItem.title}
+                            </Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                      ))}
+                    </SidebarMenuSub>
+                  </CollapsibleContent>
+
+                }
+              </SidebarMenuItem>
+            </Collapsible>
+          ))}
+        </SidebarMenu>
+      </SidebarContent>
+
     </Sidebar>
   )
 }
