@@ -16,7 +16,7 @@ const Topbar = () => {
       <div className="hidden md:block md:w-[calc(16rem+2rem)]"></div>
 
       {/* Middle = search + right icons */}
-      <div className="flex flex-1 items-center justify-between md:pe-8 px-5">
+      <div className="flex flex-1 items-center justify-between px-5 md:px-0 md:pe-8">
         
         {/* Search stays clean */}
         <div>
@@ -37,4 +37,3 @@ const Topbar = () => {
 }
 
 export default Topbar
-
