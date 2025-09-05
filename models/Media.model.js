@@ -36,5 +36,5 @@ const mediaSchema = new mongoose.Schema({
   },
 }, {timestamps: true })
 
-const MediaModel = mongoose.models.Media || mongoose.model('OTP', mediaSchema, 'medias')
+const MediaModel = mongoose.models.Media || mongoose.model('Media', mediaSchema, 'medias')
 export default MediaModel
