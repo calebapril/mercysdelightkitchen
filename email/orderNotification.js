@@ -210,8 +210,8 @@ export const orderNotification = (data) => {
 																style="width:100%;padding-right:0px;padding-left:0px;">
 																<div align="center" class="alignment">
 																	<div style="max-width: 248px;"><img alt="Logo"
-																			height="auto" src="https://res.cloudinary.com/do7xdfl3y/image/upload/v1746551738/next-ecommerce/logo-black_bxt60d.png"
-																			style="display: block; height: auto; border: 0; width: 100%;"
+																			height="auto" src="https://res.cloudinary.com/dtvvh0xts/image/upload/v1756219270/Logo_krtasl.png"
+																			style="display: block; height: auto; border: 0; width: 33%;"
 																			title="Logo" width="248" /></div>
 																</div>
 															</td>
