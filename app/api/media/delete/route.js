@@ -68,7 +68,7 @@ export async function DELETE(request) {
 
     await MediaModel.deleteMany({_id: {$in: ids}})
 
-    //delete all maedia from cloudinary.
+    //delete all media from cloudinary.
 
   } catch (error) {
     return catchError(error)
