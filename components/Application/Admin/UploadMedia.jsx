@@ -94,7 +94,7 @@ import axios from "axios";
 import { CldUploadWidget } from 'next-cloudinary';
 import { FiPlus } from "react-icons/fi";
 
-const UploadMedia = ({ isMultiple, onUploadComplete }) => {
+const UploadMedia = ({ isMultiple, onUploadComplete, queryClient }) => {
   const handleOnError = (error) => {
     showToast("error", error.statusText);
   };
@@ -121,6 +121,7 @@ const UploadMedia = ({ isMultiple, onUploadComplete }) => {
         if (!mediaUploadResponse.success) {
           throw new Error(mediaUploadResponse.message);
         }
+        queryClient.invalidateQueries(['media-data'])
 
         showToast("success", mediaUploadResponse.message);
 

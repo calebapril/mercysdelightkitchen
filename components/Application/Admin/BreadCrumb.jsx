@@ -33,3 +33,4 @@ const BreadCrumb = ({ breadcrumbData }) => {
 };
 
 export default BreadCrumb;
+

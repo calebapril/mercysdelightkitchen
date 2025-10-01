@@ -1,6 +1,8 @@
+import cloudinary from "@/lib/cloudinary";
 import { connectDB } from "@/lib/databaseConnection";
 import { catchError, isAuthenticated, response } from "@/lib/helperFunction";
 import MediaModel from "@/models/Media.model";
+import mongoose from "mongoose";
 
 export async function PUT(request) {
   try {
@@ -34,13 +36,18 @@ export async function PUT(request) {
       await MediaModel.updateMany({_id: {$in: ids}}, {$set: {deletedAt: null}})
     }
 
-    
+    return response(true, 200, deleteType === 'SD' ? 'Data moved into trash.' : 'Data restored.')
   } catch (error) {
     return catchError(error)
   }
 }
 
 export async function DELETE(request) {
+
+  const session = await mongoose.startSession()
+  session.startTransaction()
+
+
   try {
     const auth = await isAuthenticated('admin')
     if(!auth.isAuth){
@@ -57,7 +64,7 @@ export async function DELETE(request) {
       return response(false, 400, 'Invalid or empty id list.')
     }
 
-    const media = await MediaModel.find({_id: {$in: ids}}).lean()
+    const media = await MediaModel.find({_id: {$in: ids}}).session(session).lean()
     if(!media.length){
       return response(false, 404, 'Data not found.')
     }
@@ -66,11 +73,26 @@ export async function DELETE(request) {
       return response(false, 403, 'Invalid delete operation. Delete type should be PD for this route.')
     }
 
-    await MediaModel.deleteMany({_id: {$in: ids}})
+    await MediaModel.deleteMany({_id: {$in: ids}}).session(session)
 
     //delete all media from cloudinary.
+    const publicIds = media.map(m => m.publicIds)
+
+    try {
+      await cloudinary.api.delete_resources(publicIds)
+    } catch (error) {
+      await session.abortTransaction()
+      session.endSession()
+    }
+
+    await session.commitTransaction()
+    session.endSession()
+
+    return response(true, 200, 'Data deleted permanently.')
 
   } catch (error) {
+    await session.abortTransaction()
+    session.endSession()
     return catchError(error)
   }
 }

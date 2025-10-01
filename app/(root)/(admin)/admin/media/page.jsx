@@ -121,13 +121,14 @@
 import BreadCrumb from "@/components/Application/Admin/BreadCrumb";
 import Media from "@/components/Application/Admin/Media";
 import UploadMedia from "@/components/Application/Admin/UploadMedia";
+import ButtonLoading from "@/components/Application/ButtonLoading";
 import { Button} from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import useDeleteMutation from "@/hooks/useDeleteMutation";
 import { ADMIN_DASHBOARD, ADMIN_MEDIA_SHOW } from "@/routes/AdminPanelRoute";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -139,6 +140,7 @@ const breadcrumbData = [
 ];
 
 const MediaPage = () => {
+  const queryClient = useQueryClient()
   const [deleteType, setDeleteType] = useState("SD");
   const [selectedMedia, setSelectedMedia] = useState([]);
   const [selectAll, setSelectAll] = useState(false)
@@ -169,7 +171,6 @@ const MediaPage = () => {
     fetchNextPage,
     hasNextPage,
     isFetching,
-    isFetchingNextPage,
     status,
     refetch, // 👈 this is important
   } = useInfiniteQuery({
@@ -184,14 +185,14 @@ const MediaPage = () => {
 
   const deleteMutation = useDeleteMutation('media-data', '/api/media/delete')
 
-  const handleDelete = (selectedMedia, deleteType) => {
+  const handleDelete = (ids, deleteType) => {
     // your delete logic
     let c = true
     if(deleteType === 'PD'){
       c = confirm('Are you sure you want to delete the data permanently?')
     }
     if(c){
-      deleteMutation.mutate({selectedMedia, deleteType})
+      deleteMutation.mutate({ids, deleteType})
     }
 
     setSelectAll(false)
@@ -211,6 +212,8 @@ const MediaPage = () => {
     }
   }, [selectAll])
 
+  console.log(data)
+
   return (
     <div>
       <BreadCrumb breadcrumbData={breadcrumbData} />
@@ -221,7 +224,7 @@ const MediaPage = () => {
               {deleteType === 'SD'? 'Media' : 'Media Trash'}
             </h4>
             <div className="flex items-center gap-5">
-              {deleteType === 'SD' && <UploadMedia onUploadComplete={refetch}/>}
+              {deleteType === 'SD' && <UploadMedia isMultiple={true} onUploadComplete={refetch} queryClient={queryClient}/>}
               {/* 👇 pass refetch here */}
               {/* <UploadMedia onUploadComplete={refetch} /> */}
               <div className="flex gap-3">
@@ -238,7 +241,7 @@ const MediaPage = () => {
             </div>
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pb-5">
 
           {selectedMedia.length> 0
           &&
@@ -255,7 +258,7 @@ const MediaPage = () => {
               <>
               <Button className="bg-green-500 hover:bg-green-600" onClick={()=> handleDelete(selectedMedia, 'RSD')}>Restore</Button>
 
-              <Button className="bg-green-500 hover:bg-green-600" onClick={()=> handleDelete(selectedMedia, 'RSD')}>Delete Permanently</Button>
+              <Button variant="destructive" className="hover:bg-green-600" onClick={()=> handleDelete(selectedMedia, 'RSD')}>Delete Permanently</Button>
               </>
               }
             </div>
@@ -266,7 +269,9 @@ const MediaPage = () => {
             <div>Loading...</div>
           ) : status === "error" ? (
             <div className="text-red-500 text-sm">{error.message}</div>
-          ) : (
+          ) : 
+          <>
+          {data.pages.flatMap(page => page.mediaData.map(media=> media._id)).length === 0 && <div className="text-center">Data not found</div>}
             <div className="grid lg:grid-cols-5 sm:grid-cols-3 grid-cols-2 gap-2 mb-5">
               {data?.pages?.map((page, index) => (
                 <React.Fragment key={index}>
@@ -283,7 +288,14 @@ const MediaPage = () => {
                 </React.Fragment>
               ))}
             </div>
-          )}
+
+          </>
+          
+          }
+
+          {hasNextPage &&
+          <ButtonLoading type="button" className="cursor-pointer" loading={isFetching} onClick={()=> fetchNextPage()} text="Load More" />
+          }
         </CardContent>
       </Card>
     </div>
