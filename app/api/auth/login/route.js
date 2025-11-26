@@ -66,7 +66,7 @@ export async function POST(request) {
     }
 
     // Otp generation
-    await OTPModel.deleteMany({email}) //deleting old otps
+    await OTPModel.deleteMany({ email }) //deleting old otps
     const otp = generateOTP()
     //storing otp into database
     const newOtpData = new OTPModel({
@@ -76,7 +76,7 @@ export async function POST(request) {
     await newOtpData.save()
 
     const otpEmailStatus = await sendMail('Your login verification code', email, otpEmail(otp))
-    if(!otpEmailStatus.success){
+    if (!otpEmailStatus.success) {
       return response(false, 400, "Failed to send OTP.");
     }
 
