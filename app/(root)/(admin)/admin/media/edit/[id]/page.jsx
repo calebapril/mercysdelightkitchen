@@ -71,7 +71,7 @@ const EditMedia = ({ params }) => {
   const onSubmit = async (values) => {
     try {
       setLoading(true);
-      const { data: response } = await axios.put("/api/media/update", values);
+      const { data: response } = await axios.post("/api/media/update", values);
       if (!response.success) {
         throw new Error(response.message);
       }
