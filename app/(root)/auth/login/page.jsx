@@ -107,7 +107,7 @@ function LoginPage() {
         <>
                 <div className="text-center">
           <h1 className="text-[20px] text-[rgb(51,51,51)]  font-bold">Login Into Account</h1>
-          <p className="text-[rgb(51,51,51)]">If you are visiting us for the first time, please sign up below. Existing customers, please login.</p>
+          <p className="text-[rgb(51,51,51)]">If you are visiting us for the first time, please sign up below. Existing customers, please login..</p>
         </div>
         <div className="mt-5">
           <Form {...form}>
