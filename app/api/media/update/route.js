@@ -1,6 +1,6 @@
 // Stop here 
 
-
+// AI - write_up
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/databaseConnection";
 import MediaModel from "@/models/Media.model"; // adjust the model path
